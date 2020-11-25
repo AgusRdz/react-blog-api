@@ -63,36 +63,24 @@
     ```
   - [ ] create **.eslintrc.js** file:
 
-        ```js
-        module.exports = {
-
-    env: {
-    commonjs: true,
-    es2021: true,
-    node: true
-    },
-    extends: ['standard', 'prettier'],
-    parserOptions: {
-    ecmaVersion: 12
-    },
-    rules: {}
+    ```js
+    module.exports = {
+      env: {
+        commonjs: true,
+        es2021: true,
+        node: true
+      },
+      extends: ['standard', 'prettier'],
+      parserOptions: {
+        ecmaVersion: 12
+      },
+      rules: {}
     }
+    ```
 
-        ```
-
-- [ ] install **lint-staged**: `npx mrm lint-staged`
-- [ ] create **jsconfig.json**
-
-  ```json
-  {
-    "compilerOptions": {
-      "baseUrl": "."
-    }
-  }
-  ```
-
+  - [ ] install **lint-staged**: `npx mrm lint-staged`
   - [ ] configure routes
-  - [ ] responses
+  - [ ] responses (response-formatter)
   - [ ] request validations (express-valiation, joi, etc)
   - [ ] configure mongo
 
@@ -100,4 +88,12 @@
 
   - [ ] Login
     - [ ] jwt
+    - [ ] refresh token if expired
   - [ ] Reset password
+  - [ ] Users
+    - [ ] create
+  - [ ] Blogs
+    - [ ] create
+    - [ ] list
+    - [ ] update
+    - [ ] delete
