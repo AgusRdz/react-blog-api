@@ -23,7 +23,7 @@ exports.login = async (req, res) => {
       if (err || !result) return res.formatter.badRequest(invalidCredentials)
 
       const accessToken = jwt.sign({ user }, 'thisisaseed', { expiresIn: 3600 })
-      res.formatter.ok({ accessToken, user })
+      return res.formatter.ok({ accessToken, user })
     })
   })
 }
