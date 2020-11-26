@@ -1,5 +1,7 @@
 const Joi = require('joi')
 const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const config = require('../config/config')
 
 const getAccessToken = (authorization) =>
   authorization.replace(/bearer/gi, '').trim()
@@ -17,7 +19,8 @@ exports.jwtValidate = (req, res, next) => {
   }
 
   const accessToken = getAccessToken(req.headers.authorization)
-  jwt.verify(accessToken, 'thisisaseed', (err, decoded) => {
+  const privateKey = fs.readFileSync(config.privateKeyPath)
+  jwt.verify(accessToken, privateKey, (err, decoded) => {
     if (err && err.name === 'TokenExpiredError') {
       return res.formatter.unauthorized(err)
     }

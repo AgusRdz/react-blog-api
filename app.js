@@ -12,13 +12,14 @@ const sanitize = require('express-sanitizer')
 require('./src/models/index')
 
 app.use(logger('dev'))
+app.use(express.static('public'))
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(sanitize())
 app.use(responseEnhancer())
-
+app.get('/', (req, res) => res.formatter.ok('success'))
 fs.readdir('./src/routes', (err, files) => {
   if (err) console.error(err)
 

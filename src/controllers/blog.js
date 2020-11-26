@@ -15,12 +15,21 @@ exports.index = async (req, res) => {
 
 exports.store = async (req, res) => {
   const {
-    body: { title, cover, content },
+    body: { title, content, description, status },
     headers: { session_id: author }
   } = req
 
   try {
-    const blog = await Blog.create({ title, cover, content, author })
+    const randomImage = Math.floor(Math.random() * 10) + 1
+    const cover = `/images/blogs/${randomImage}.jpg`
+    const blog = await Blog.create({
+      title,
+      cover,
+      content,
+      author,
+      description,
+      status
+    })
 
     return res.formatter.created({ blog })
   } catch (error) {

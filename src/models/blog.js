@@ -1,25 +1,34 @@
 const mongoose = require('mongoose')
+const mongooseSlugPlugin = require('mongoose-slug-plugin')
 const Schema = mongoose.Schema
 const blogSchema = new Schema(
   {
     title: {
-      type: String
+      type: String,
+      required: true
     },
-    // slug: {
-    //   type: String,
-    //   unique: true
-    // },
+    slug: {
+      type: String,
+      unique: true,
+      required: true
+    },
     cover: {
       type: String,
       default: null
     },
+    description: {
+      type: String,
+      required: true
+    },
     content: {
-      type: String
+      type: String,
+      default: null
     },
     status: {
       type: String,
       enum: ['draft', 'published', 'deleted'],
-      default: 'draft'
+      default: 'draft',
+      required: true
     },
     publishedAt: {
       type: Date,
@@ -31,7 +40,8 @@ const blogSchema = new Schema(
     },
     author: {
       type: Schema.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     }
   },
   {
@@ -39,6 +49,7 @@ const blogSchema = new Schema(
   }
 )
 
+blogSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' })
 const Blog = mongoose.model('Blog', blogSchema)
 
 module.exports.Blog = Blog

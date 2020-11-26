@@ -1,6 +1,8 @@
 const { compare } = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User } = require('../models/user')
+const fs = require('fs')
+const config = require('../config/config')
 
 exports.login = async (req, res) => {
   const {
@@ -22,7 +24,10 @@ exports.login = async (req, res) => {
     compare(password, user.password, function (err, result) {
       if (err || !result) return res.formatter.badRequest(invalidCredentials)
 
-      const accessToken = jwt.sign({ user }, 'thisisaseed', { expiresIn: 3600 })
+      const privateKey = fs.readFileSync(config.privateKeyPath)
+      const accessToken = jwt.sign({ user }, privateKey, {
+        expiresIn: 3600
+      })
       return res.formatter.ok({ accessToken, user })
     })
   })
@@ -33,6 +38,7 @@ exports.tokenRefresh = async (req, res) => {
     body: { oldAccessToken }
   } = req
   const { user } = jwt.decode(oldAccessToken)
-  const accessToken = jwt.sign({ user }, 'thisisaseed', { expiresIn: 3600 })
-  res.formatter.ok({ accessToken })
+  const privateKey = fs.readFileSync(config.privateKeyPath)
+  const accessToken = jwt.sign({ user }, privateKey, { expiresIn: 3600 })
+  return res.formatter.ok({ accessToken })
 }

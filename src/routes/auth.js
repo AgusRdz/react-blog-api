@@ -4,8 +4,7 @@ const auth = require('../controllers/auth')
 const { refreshJwtRequest } = require('../middlewares/auth')
 const { loginRequest } = require('../middlewares/login')
 
-router.post('/login', loginRequest, auth.login)
-router.post('/token/refresh', refreshJwtRequest, auth.tokenRefresh)
-router.use('/auth', router)
+router.post('/auth/login', loginRequest, auth.login)
+router.post('/auth/token/refresh', refreshJwtRequest, auth.tokenRefresh)
 
 module.exports = router
