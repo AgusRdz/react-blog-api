@@ -37,6 +37,49 @@ exports.store = async (req, res) => {
   }
 }
 
-exports.update = async (req, res) => {}
+exports.update = async (req, res) => {
+  const {
+    params: { id },
+    body: { title, description, status, content }
+  } = req
 
-exports.destroy = async (req, res) => {}
+  const blog = await Blog.findAndModify(id, {
+    title,
+    description,
+    status,
+    content
+  })
+
+  return res.formatter.ok({ blog })
+}
+
+exports.destroy = async (req, res) => {
+  const {
+    params: { id }
+  } = req
+  console.log('destroying: ', id)
+
+  await Blog.updateOne(
+    { _id: id },
+    {
+      deletedAt: Date.now(),
+      status: 'archived'
+    }
+  )
+  const blog = await Blog.findById(id)
+
+  return res.formatter.ok({ blog })
+}
+
+exports.edit = async (req, res) => {
+  const {
+    params: { id }
+  } = req
+  const blog = await Blog.findById(id)
+
+  if (!blog) {
+    return res.formatter.notFound('Resource you are looking for does not exist')
+  }
+
+  return res.formatter.ok({ blog })
+}
