@@ -21,7 +21,8 @@ exports.createRequest = (req, res, next) => {
     cover: Joi.string().optional().allow(''),
     content: Joi.string().optional().allow(''),
     status: Joi.string().required(),
-    description: Joi.string().required().max(100)
+    description: Joi.string().required().max(100),
+    category: Joi.string().required()
   })
 
   const { error } = schema.validate(req.body)
@@ -42,7 +43,8 @@ exports.updateRequest = (req, res, next) => {
     cover: Joi.string().optional().allow(''),
     content: Joi.string().optional().allow(''),
     status: Joi.string().required(),
-    description: Joi.string().required().max(100)
+    description: Joi.string().required().max(100),
+    category: Joi.string().required()
   })
   const { error } = schema.validate({ ...req.body, ...req.params })
 

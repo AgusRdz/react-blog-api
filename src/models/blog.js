@@ -12,10 +12,6 @@ const blogSchema = new Schema(
       unique: true,
       required: true
     },
-    cover: {
-      type: String,
-      default: null
-    },
     description: {
       type: String,
       required: true
@@ -24,9 +20,13 @@ const blogSchema = new Schema(
       type: String,
       default: null
     },
+    category: {
+      type: String,
+      required: true
+    },
     status: {
       type: String,
-      enum: ['draft', 'published', 'deleted'],
+      enum: ['draft', 'published', 'archived', 'deleted'],
       default: 'draft',
       required: true
     },

@@ -1,6 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const { index, store, destroy, update, edit } = require('../controllers/blog')
+const {
+  index,
+  store,
+  destroy,
+  update,
+  edit,
+  archive
+} = require('../controllers/blog')
 const { jwtValidate } = require('../middlewares/auth')
 const {
   createRequest,
@@ -22,5 +29,10 @@ router
   .get(editRequest, edit)
   .put(updateRequest, update)
   .delete(deleteRequest, destroy)
+
+router
+  .route('/blogs/:id/archive')
+  .all(jwtValidate)
+  .delete(deleteRequest, archive)
 
 module.exports = router

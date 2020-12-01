@@ -6,29 +6,30 @@ exports.index = async (req, res) => {
   } = req
   const limit = 10
   const total = await Blog.countDocuments()
-  const blogs = await Blog.find()
+  const blogs = await Blog.find({ status: { $ne: 'deleted' } })
     .limit(limit)
     .skip(page * limit)
+    .sort({
+      createdAt: 'desc'
+    })
 
   return res.formatter.ok({ blogs, total, page })
 }
 
 exports.store = async (req, res) => {
   const {
-    body: { title, content, description, status },
+    body: { title, content, description, status, category },
     headers: { session_id: author }
   } = req
 
   try {
-    const randomImage = Math.floor(Math.random() * 10) + 1
-    const cover = `/images/blogs/${randomImage}.jpg`
     const blog = await Blog.create({
       title,
-      cover,
       content,
       author,
       description,
-      status
+      status,
+      category
     })
 
     return res.formatter.created({ blog })
@@ -40,15 +41,19 @@ exports.store = async (req, res) => {
 exports.update = async (req, res) => {
   const {
     params: { id },
-    body: { title, description, status, content }
+    body: { title, description, status, content, category }
   } = req
 
-  const blog = await Blog.findAndModify(id, {
-    title,
-    description,
-    status,
-    content
-  })
+  const blog = await Blog.updateOne(
+    { _id: id },
+    {
+      title,
+      description,
+      status,
+      content,
+      category
+    }
+  )
 
   return res.formatter.ok({ blog })
 }
@@ -57,18 +62,10 @@ exports.destroy = async (req, res) => {
   const {
     params: { id }
   } = req
-  console.log('destroying: ', id)
 
-  await Blog.updateOne(
-    { _id: id },
-    {
-      deletedAt: Date.now(),
-      status: 'archived'
-    }
-  )
-  const blog = await Blog.findById(id)
+  await Blog.deleteOne({ _id: id })
 
-  return res.formatter.ok({ blog })
+  return res.formatter.ok()
 }
 
 exports.edit = async (req, res) => {
@@ -80,6 +77,23 @@ exports.edit = async (req, res) => {
   if (!blog) {
     return res.formatter.notFound('Resource you are looking for does not exist')
   }
+
+  return res.formatter.ok({ blog })
+}
+
+exports.archive = async (req, res) => {
+  const {
+    params: { id }
+  } = req
+
+  await Blog.updateOne(
+    { _id: id },
+    {
+      deletedAt: Date.now(),
+      status: 'archived'
+    }
+  )
+  const blog = await Blog.findById(id)
 
   return res.formatter.ok({ blog })
 }

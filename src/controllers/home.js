@@ -14,6 +14,9 @@ module.exports.index = async (req, res) => {
   })
     .limit(limit)
     .skip(page * limit)
+    .sort({
+      createdAt: 'desc'
+    })
   const hasNext = page < Math.round(total / 9) - 1
 
   return res.formatter.ok({ blogs, total, hasNext })
