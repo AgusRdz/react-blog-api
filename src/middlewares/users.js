@@ -1,13 +1,12 @@
 const Joi = require('joi')
 
-const schema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().required().min(8)
-})
-
-exports.create = (req, res, next) => {
+exports.createRequest = (req, res, next) => {
+  const schema = Joi.object({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required().min(8)
+  })
   const { error } = schema.validate(req.body)
 
   if (error) {

@@ -42,7 +42,12 @@ const blogSchema = new Schema(
       type: Schema.ObjectId,
       ref: 'User',
       required: true
-    }
+    },
+    tags: [
+      {
+        type: String
+      }
+    ]
   },
   {
     timestamps: true
@@ -50,6 +55,4 @@ const blogSchema = new Schema(
 )
 
 blogSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' })
-const Blog = mongoose.model('Blog', blogSchema)
-
-module.exports.Blog = Blog
+module.exports.Blog = mongoose.model('Blog', blogSchema)

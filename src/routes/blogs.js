@@ -6,7 +6,8 @@ const {
   destroy,
   update,
   edit,
-  archive
+  archive,
+  show
 } = require('../controllers/blog')
 const { jwtValidate } = require('../middlewares/auth')
 const {
@@ -14,7 +15,8 @@ const {
   updateRequest,
   filterRequest,
   editRequest,
-  deleteRequest
+  deleteRequest,
+  showRequest
 } = require('../middlewares/blogs')
 
 router
@@ -30,9 +32,8 @@ router
   .put(updateRequest, update)
   .delete(deleteRequest, destroy)
 
-router
-  .route('/blogs/:id/archive')
-  .all(jwtValidate)
-  .delete(deleteRequest, archive)
+router.route('/blogs/:id/archive').delete(jwtValidate, deleteRequest, archive)
+
+router.route('/blogs/:slug/show').get(jwtValidate, showRequest, show)
 
 module.exports = router

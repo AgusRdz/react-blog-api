@@ -22,7 +22,8 @@ exports.createRequest = (req, res, next) => {
     content: Joi.string().optional().allow(''),
     status: Joi.string().required(),
     description: Joi.string().required().max(100),
-    category: Joi.string().required()
+    category: Joi.string().required(),
+    tags: Joi.array().optional()
   })
 
   const { error } = schema.validate(req.body)
@@ -44,8 +45,10 @@ exports.updateRequest = (req, res, next) => {
     content: Joi.string().optional().allow(''),
     status: Joi.string().required(),
     description: Joi.string().required().max(100),
-    category: Joi.string().required()
+    category: Joi.string().required(),
+    tags: Joi.array().optional()
   })
+
   const { error } = schema.validate({ ...req.body, ...req.params })
 
   if (error) {
@@ -76,6 +79,22 @@ exports.editRequest = (req, res, next) => {
 exports.deleteRequest = (req, res, next) => {
   const schema = Joi.object({
     id: Joi.string().required()
+  })
+
+  const { error } = schema.validate(req.params)
+
+  if (error) {
+    const message = error.details.map(({ message }) => message).join(',')
+
+    return res.formatter.unprocess({ message })
+  }
+
+  next()
+}
+
+exports.showRequest = (req, res, next) => {
+  const schema = Joi.object({
+    slug: Joi.string().required()
   })
 
   const { error } = schema.validate(req.params)

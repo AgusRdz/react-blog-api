@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const user = require('../controllers/user')
-const { create } = require('../middlewares/users')
+const { index, update, store, destroy } = require('../controllers/user')
+const { createRequest } = require('../middlewares/users')
 
-router.route('/users').get(user.index).post(create, user.store)
-router.route('/users/:id').put(user.update).delete(user.destroy)
+router.route('/users').get(index).post(createRequest, store)
+router.route('/users/:id').put(update).delete(destroy)
 
 module.exports = router
