@@ -34,6 +34,6 @@ router
 
 router.route('/blogs/:id/archive').delete(jwtValidate, deleteRequest, archive)
 
-router.route('/blogs/:slug/show').get(jwtValidate, showRequest, show)
+router.route('/blogs/:slug/show').get(showRequest, show)
 
 module.exports = router
