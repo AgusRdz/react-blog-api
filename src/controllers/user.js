@@ -1,13 +1,10 @@
-const { User } = require('../models/user')
+const { UserRepository } = require('../repositories/user-repository')
 
 exports.index = (req, res) => {}
 
 exports.store = async (req, res) => {
-  const {
-    body: { firstName, lastName, password, email }
-  } = req
-
-  const user = await User.create({ firstName, lastName, email, password })
+  const { body } = req
+  const user = await UserRepository.create(body)
 
   return res.formatter.created({ user })
 }

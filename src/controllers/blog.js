@@ -1,6 +1,5 @@
-const { Blog } = require('../models/blog')
-const { Tag } = require('../models/tag')
 const { BlogRepository } = require('../repositories/blog-repository')
+const { TagRepository } = require('../repositories/tag-repository')
 
 exports.index = async (req, res) => {
   const {
@@ -8,7 +7,7 @@ exports.index = async (req, res) => {
   } = req
 
   const blogs = await BlogRepository.filter(page)
-  const total = await BlogRepository.countAll()
+  const total = await BlogRepository.count()
 
   return res.formatter.ok({ blogs, total, page })
 }
@@ -22,12 +21,12 @@ exports.store = async (req, res) => {
   try {
     const publishedAt = status === 'published' ? Date.now() : null
     tags.forEach(async (name) => {
-      const exists = await Tag.count({ name: name.toLowerCase() })
+      const exists = await TagRepository.count({ name: name.toLowerCase() })
       if (exists === 0) {
-        await Tag.create({ name: name.toLowerCase() })
+        await TagRepository.create({ name: name.toLowerCase() })
       }
     })
-    const blog = await Blog.create({
+    const blog = await BlogRepository.create({
       title,
       content,
       author,
@@ -51,24 +50,21 @@ exports.update = async (req, res) => {
   } = req
   const publishedAt = status === 'published' ? Date.now() : null
   tags.forEach(async (name) => {
-    const exists = await Tag.count({ name: name.toLowerCase() })
+    const exists = await TagRepository.count({ name: name.toLowerCase() })
     if (exists === 0) {
-      await Tag.create({ name: name.toLowerCase() })
+      await TagRepository.create({ name: name.toLowerCase() })
     }
   })
 
-  const blog = await Blog.updateOne(
-    { _id: id },
-    {
-      title,
-      description,
-      status,
-      content,
-      category,
-      publishedAt,
-      tags
-    }
-  )
+  const blog = await BlogRepository.update(id, {
+    title,
+    description,
+    status,
+    content,
+    category,
+    publishedAt,
+    tags
+  })
 
   return res.formatter.ok({ blog })
 }
@@ -78,7 +74,7 @@ exports.destroy = async (req, res) => {
     params: { id }
   } = req
 
-  await Blog.deleteOne({ _id: id })
+  await BlogRepository.destroy(id)
 
   return res.formatter.ok()
 }
@@ -87,7 +83,7 @@ exports.edit = async (req, res) => {
   const {
     params: { id }
   } = req
-  const blog = await Blog.findById(id)
+  const blog = await BlogRepository.findById(id)
 
   if (!blog) {
     return res.formatter.notFound('Resource you are looking for does not exist')
@@ -101,14 +97,12 @@ exports.archive = async (req, res) => {
     params: { id }
   } = req
 
-  await Blog.updateOne(
-    { _id: id },
-    {
-      deletedAt: Date.now(),
-      status: 'archived'
-    }
-  )
-  const blog = await Blog.findById(id)
+  await BlogRepository.update(id, {
+    deletedAt: Date.now(),
+    status: 'archived'
+  })
+
+  const blog = await BlogRepository.findById(id)
 
   return res.formatter.ok({ blog })
 }
@@ -117,7 +111,10 @@ exports.show = async (req, res) => {
   const {
     params: { slug }
   } = req
-  const blog = await Blog.findOne({ slug })
+  const blog = await BlogRepository.findOneWith(
+    { slug },
+    { path: 'author', select: 'firstName lastName' }
+  )
 
   return res.formatter.ok({ blog })
 }

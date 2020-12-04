@@ -10,6 +10,31 @@ const filter = async (page) => {
     })
 }
 
-const countAll = async () => await Blog.countDocuments()
+const count = async (where = {}) => await Blog.countDocuments(where)
 
-module.exports.BlogRepository = { filter, countAll }
+const create = async (data) => await Blog.create(data)
+
+const update = async (id, data) => await Blog.updateOne({ _id: id }, data)
+
+const destroy = async (id) => await Blog.deleteOne({ _id: id })
+
+const findById = async (id) => await Blog.findById(id)
+
+const findOne = async (where) => await Blog.findOne(where)
+
+const findOneWith = async (where, populate) =>
+  await Blog.findOne(where).populate(populate.path, populate.select)
+
+const find = async (where) => await Blog.findOne(where)
+
+module.exports.BlogRepository = {
+  filter,
+  count,
+  create,
+  update,
+  destroy,
+  findById,
+  findOne,
+  findOneWith,
+  find
+}
