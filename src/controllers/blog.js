@@ -1,18 +1,14 @@
 const { Blog } = require('../models/blog')
 const { Tag } = require('../models/tag')
+const { BlogRepository } = require('../repositories/blog-repository')
 
 exports.index = async (req, res) => {
   const {
     query: { page }
   } = req
-  const limit = 10
-  const total = await Blog.countDocuments()
-  const blogs = await Blog.find({ status: { $ne: 'deleted' } })
-    .limit(limit)
-    .skip(page * limit)
-    .sort({
-      createdAt: 'desc'
-    })
+
+  const blogs = await BlogRepository.filter(page)
+  const total = await BlogRepository.countAll()
 
   return res.formatter.ok({ blogs, total, page })
 }
