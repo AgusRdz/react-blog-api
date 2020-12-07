@@ -12,3 +12,8 @@ module.exports.index = async (req, res) => {
 
   return res.formatter.ok({ blogs, total, hasNext })
 }
+
+module.exports.latest = async (req, res) => {
+  const blogs = await HomeRepository.getAll(5, 0)
+  return res.formatter.ok({ blogs })
+}
