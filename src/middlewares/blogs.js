@@ -12,6 +12,7 @@ exports.filterRequest = (req, res, next) => {
     return res.formatter.unprocess(message)
   }
 
+  req.query.page = req.sanitize(req.query.page)
   next()
 }
 
@@ -34,6 +35,13 @@ exports.createRequest = (req, res, next) => {
     return res.formatter.unprocess(message)
   }
 
+  req.body.title = req.sanitize(req.body.title)
+  req.body.cover = req.sanitize(req.body.cover)
+  req.body.content = req.sanitize(req.body.content)
+  req.body.status = req.sanitize(req.body.status)
+  req.body.description = req.sanitize(req.body.description)
+  req.body.category = req.sanitize(req.body.category)
+  req.body.tags = req.sanitize(req.body.tags).split(',')
   next()
 }
 
@@ -57,6 +65,14 @@ exports.updateRequest = (req, res, next) => {
     return res.formatter.unprocess(message)
   }
 
+  req.params.id = req.sanitize(req.params.id)
+  req.body.title = req.sanitize(req.body.title)
+  req.body.cover = req.sanitize(req.body.cover)
+  req.body.content = req.sanitize(req.body.content)
+  req.body.status = req.sanitize(req.body.status)
+  req.body.description = req.sanitize(req.body.description)
+  req.body.category = req.sanitize(req.body.category)
+  req.body.tags = req.sanitize(req.body.tags).split(',')
   next()
 }
 
@@ -73,6 +89,7 @@ exports.editRequest = (req, res, next) => {
     return res.formatter.unprocess({ message })
   }
 
+  req.params.id = req.sanitize(req.params.id)
   next()
 }
 
@@ -89,6 +106,7 @@ exports.deleteRequest = (req, res, next) => {
     return res.formatter.unprocess({ message })
   }
 
+  req.params.id = req.sanitize(req.params.id)
   next()
 }
 
@@ -105,5 +123,6 @@ exports.showRequest = (req, res, next) => {
     return res.formatter.unprocess({ message })
   }
 
+  req.params.slug = req.sanitize(req.params.slug)
   next()
 }

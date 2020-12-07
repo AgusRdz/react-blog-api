@@ -1,8 +1,8 @@
 const Joi = require('joi')
 
-exports.homeRequest = (req, res, next) => {
+exports.filterRequest = (req, res, next) => {
   const schema = Joi.object({
-    page: Joi.number().required()
+    status: Joi.string().optional().allow('')
   })
   const { error } = schema.validate(req.query)
 
@@ -12,6 +12,6 @@ exports.homeRequest = (req, res, next) => {
     return res.formatter.unprocess(message)
   }
 
-  req.query.page = req.sanitize(req.query.page)
+  req.query.status = req.sanitize(req.query.status)
   next()
 }

@@ -18,7 +18,8 @@ exports.jwtValidate = (req, res, next) => {
     return res.formatter.unauthorized(message)
   }
 
-  const accessToken = getAccessToken(req.headers.authorization)
+  const token = req.sanitize(req.headers.authorization)
+  const accessToken = getAccessToken(token)
   const privateKey = fs.readFileSync(config.privateKeyPath)
   jwt.verify(accessToken, privateKey, (err, decoded) => {
     if (err && err.name === 'TokenExpiredError') {
@@ -29,6 +30,7 @@ exports.jwtValidate = (req, res, next) => {
       return res.formatter.serverError(err)
     }
 
+    req.headers.authorization = token
     req.headers.session_id = decoded.user._id
     next()
   })
@@ -46,6 +48,7 @@ exports.refreshJwtRequest = (req, res, next) => {
     return res.formatter.serverError(message)
   }
 
-  req.body.oldAccessToken = getAccessToken(req.headers.authorization)
+  const token = req.sanitize(req.headers.authorization)
+  req.body.oldAccessToken = getAccessToken(token)
   next()
 }
